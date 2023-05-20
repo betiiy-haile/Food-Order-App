@@ -40,6 +40,12 @@ const Checkout = (props) => {
         return
     }
     // Submit the data
+    props.onSubmit({
+        name: enteredName,
+        street: enteredStreet,
+        postalCode: enteredPostalCode,
+        city: enteredCity
+    })
   };
   
   const nameControl = `${classes.control} ${formValidity.name ? '' : classes.invalid}`
