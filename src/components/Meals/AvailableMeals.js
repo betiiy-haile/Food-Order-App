@@ -33,6 +33,8 @@ const DUMMY_MEALS = [
 const AvailableMeals = () => {
 
   const [meals, setMeals] = useState(DUMMY_MEALS)
+  const [isMealsLoading, setIsMealsLoading] = useState(true)
+  const [httpError, setHttpError] = useState()
 
   const fetchMeals = useCallback(async () => {
     try {
@@ -53,14 +55,31 @@ const AvailableMeals = () => {
         });
       }
       setMeals(loadedMeals);
+      setIsMealsLoading(false)
     } catch (error) {
       console.log(error);
+      setHttpError(error.message)
     }
   }, []);
 
   useEffect(() => {
-    fetchMeals()
+    fetchMeals().catch(error =>{
+      setIsMealsLoading(false);
+      setHttpError(error.message);
+    })
   }, [fetchMeals])
+
+  if(isMealsLoading){
+    return <section>
+      <p className={classes.mealsLoading}>Loading...</p>
+    </section>
+  } 
+
+  if(httpError){
+    return <section>
+      <p className={classes.mealsError} >{httpError}</p>
+    </section>
+  }
 
   //  const mealsList = meals && meals.map((meal) => <MealItem key={meal.id} id={meal.id} name={meal.name} description={meal.description} price={meal.price} />)
   return (
